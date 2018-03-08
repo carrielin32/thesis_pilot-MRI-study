@@ -80,7 +80,7 @@ def trial(stim):
 
     sound = loadSound('test/data/task1/' + stim['stimuli'] + '.WAV',stereo_array_format=True)  # Load the wav file
     #sound = changeOnTracks(sound,changeVolume,[1,0]) #play only through left ear
-    sound_noise = whitenoise(length=len(sound), power_signal=power(sound),snr= -12.0)
+    sound_noise = whitenoise(length=len(sound), power_signal=power(sound),snr= -8.0)
     sound_final = sound + sound_noise
     sound_final = rise-decayx(sound_final, weaken_duration=0.01, duration_target=len(sound_final))
 

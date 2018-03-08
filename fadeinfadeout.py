@@ -20,7 +20,7 @@ def fadeInOutSound(srcSoundFile, dstSoundFile):
 	factors = factors + (1,)*(length-start*2)+factors[::-1]  #2nd parameter in round(), control the speed of fadein-fadeout
 
 	soundData = np.array(tuple(map(lambda data, factor: [np.int16(data[0]*factor), 
-														np.int16(data[1]*factor)], soundData, factors)))
+							     np.int16(data[1]*factor)], soundData, factors)))
 
 	wavfile.write(dstSoundFile, sampleRate, soundData)
 
@@ -34,7 +34,8 @@ def fadeInOutSound(srcSoundFile, dstSoundFile):
 
 		return np.concatenate(
 			[data_t[:-weaken_sample], 
-			data_t[-weaken_sample:] * np.cos(np.linspace(0, np.pi/2, weaken_sample))]) #weaken last weaken duration of the sound 
+			data_t[-weaken_sample:] * np.cos(np.linspace(0, np.pi/2, weaken_sample))]) 
+	                                      #weaken last weaken duration of the sound 
 
 
 

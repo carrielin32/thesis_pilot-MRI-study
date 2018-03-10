@@ -8,8 +8,12 @@ from expy import *
 import math
 import numpy as np
 from random import gauss
+#import neuropsydia as n 
 
 start(fullscreen=False,mouse_visible=True,sample_rate=22050)
+#n.start()
+
+#dataleft = {"ISI":[]}
 
 def whitenoise(length,power_signal,snr=-8.0):
 
@@ -62,7 +66,7 @@ def power(array):
         power += (i ** 2) / len(array)
     return power
 
-def rise-decayx(data, weaken_duration, duration_target):
+def risedecayx(data, weaken_duration, duration_target):
         weaken_sample = int(weaken_duration * sr) #sr=sample_rate 
         data_t = data[:int(sr* duration_target)]
 
@@ -82,25 +86,27 @@ def trial(stim):
     #sound = changeOnTracks(sound,changeVolume,[1,0]) #play only through left ear
     sound_noise = whitenoise(length=len(sound), power_signal=power(sound),snr= -8.0)
     sound_final = sound + sound_noise
-    sound_final = rise-decayx(sound_final, weaken_duration=0.01, duration_target=len(sound_final))
+    sound_final = risedecayx(sound_final, weaken_duration=0.01, duration_target=len(sound_final))
 
     playSound(sound_final)  # Play the wav file
-    
+
+        
     print(stim['stimuli'])
     
     key,RT = waitForResponse({key_.F: 'tone2', key_.J: 'tone4'}) # Waiting for pressing 'F' or 'J'
+    # four-button key pad needed 
 
     clear()
-    show(1)
-
-    return key,RT
+    show(random.randrange(start=2, stop=6, step=0.5)) 
+    
+    return key,RT,show()
 
 def block(blockID):
     readStimuli('test/data/trial_list_pilot_2.csv', query='block==%s' %(blockID))
     stimuli= readStimuli('test/data/trial_list_pilot_2.csv', query='block==%s' %(blockID))
     random.shuffle(stimuli)
 
-    alertAndGo('The experiment will start in 3s')
+    alert('Print "S" to start the experiment', allowed_keys=[key_.S])
     
     result= []
     for t in stimuli:
@@ -108,11 +114,13 @@ def block(blockID):
 
     saveResult(result,stim=stimuli)
 
-shared.subject = getInput('please enter your subject ID:')
+shared.subject = getInput('please enter the subject ID:')
 
 instruction(shared.setting['instruction4'])
 
-for blockID in range(2):
+for blockID in range(5): #five blocks in total 
     block(blockID+1)
 
-alertAndQuit('Thanks for your participation :)')
+
+#n.close()
+alertAndQuit('Finished! Thanks for your participation :)')

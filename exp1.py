@@ -12,6 +12,8 @@ import pandas as pd
 from pandas import Series, DataFrame
 
 start(fullscreen=False,mouse_visible=True,sample_rate=44100)
+#start(fullscreen=True,mouse_visible=True,sample_rate=44100)  #during formal exp. 
+
 
 def whitenoise(length,power_signal,snr=-8.0):
 
@@ -81,7 +83,7 @@ def raisedecayx(data, raise_duration, decay_duration, sr):
 def trial(stim):
 
 
-    drawText('+')
+    drawText('+',size=28)
     show(0.5)
     clear()
 
@@ -91,16 +93,20 @@ def trial(stim):
     sound_final = sound + sound_noise
     sound_final = raisedecayx(sound_final, raise_duration=0.01, decay_duration=0.01, sr=44100)
 
+    #onset_time=time.time()
+    log(playSound) #mark the time 
     playSound(sound_final)  # Play the wav file
+    
+    
+    key,RT = waitForResponse(allowed_keys={key_._1: 'ba', key_._2: 'bi', key_._3: 'da',key_._4: 'di'},out_time=2.5) # Waiting for pressing '1234'
+    #key,RT = waitForResponse({key_.NUM_1: 'ba', key_.NUM_2: 'bi', key_.NUM_3: 'da',key_.NUM_4: 'di'}) # Waiting for pressing '1234'/number-pad
+    show()
 
-        
+
     print(stim) #the presentation stimuli 
     
-    key,RT = waitForResponse({key_.F: 'ba', key_.G: 'bi', key_.H: 'da',key_.J: 'di'}) # Waiting for pressing 'FGHJ'
-    # four-button key pad needed 
-
     clear()
-    show(random.randrange(start=2, stop=4, step=1))  #ISI 
+    show(random.randrange(start=2, stop=5, step=1))  #ISI 
 
     return key,RT
 
@@ -122,6 +128,7 @@ def block(blockID):
     #show(10)
     #clear()
 
+
     #readStimuli('test/data/trial_list_snr.csv', query='block==%s' %(blockID))
     #stimuli= readStimuli('test/data/trial_list_snr.csv', query='block==%s' %(blockID))
     #random.shuffle(stimuli)  #use optseq2 to generate random list 
@@ -139,8 +146,6 @@ def block(blockID):
 
     stimuli=data_final['stimuli']  #a Series 
 
-    alert('Print "S" to start the experiment', allowed_keys=[key_.S])
-    
     result= []
     for t in stimuli:
         result.append(trial(t))
@@ -157,9 +162,22 @@ shared.subject = getInput('please enter the subject ID:')
 
 instruction(shared.setting['instruction4'])
 
+alert('Print "S" to start the experiment', allowed_keys=[key_.S])
+shared.onset=time.time()  #mark the time 1
+
+
+drawText('*',size=40)  #make this one bigger (font size=40, bold)
+show(10)
+clear()
+
 
 for blockID in range(4): #four blocks in total 
     block(blockID+1)
+
+
+clear()
+drawText('*',size=40)
+show(20)    
 
 
 alertAndQuit('Finished! Thanks for your participation :)')
